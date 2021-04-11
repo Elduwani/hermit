@@ -1,6 +1,5 @@
 import HTMLHead from 'components/Head'
 import styles from 'styles/Home.module.scss'
-import Login from './login'
 
 export default function Home() {
   return (
@@ -12,7 +11,6 @@ export default function Home() {
           Welcome to <span className="text-blue-600">Hermit!</span>
           <span className="block text-2xl text-gray-500 font-normal">Sign in to your account</span>
         </h1>
-        <Login />
       </main>
 
       <footer className={styles.footer}>

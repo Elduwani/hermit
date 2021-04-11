@@ -1,13 +1,21 @@
+// import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
+import Router from "next/router";
 import { useForm } from "react-hook-form"
 import { InputWithLabel } from "components/FormComponents";
 import Button from "components/Button";
+import { useMutate } from "utils/fetch";
 
 export default function Login() {
-    const { handleSubmit, formState: { errors, isValid }, register } = useForm()
+    const { handleSubmit, formState: { errors }, register } = useForm()
 
-    function onSubmit(values: {}) {
-        console.log(values);
-        console.log(isValid);
+    const { isLoading, mutate } = useMutate({
+        url: "api/login",
+        onSuccess: () => Router.push("/")
+    })
+
+    async function onSubmit(values: { [char: string]: string }) {
+        // console.log(values);
+        if (!isLoading) mutate(values)
     }
 
     return (
@@ -30,7 +38,7 @@ export default function Login() {
                 placeholder="Enter your password"
                 required
             />
-            <Button type="submit" variant="solid-blue">Submit</Button>
+            <Button type="submit" variant="solid-blue" disabled={isLoading}>Submit</Button>
         </form>
     )
 }
