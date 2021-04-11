@@ -16,26 +16,33 @@ export const validatePattern: { [char: string]: object } = {
 
 interface InputWithLabelProps {
     name: string,
-    label: string,
-    type: string,
-    register: Function,
-    errors: { [char: string]: string } | undefined,
-    required: boolean,
-    pattern: string,
-    defaultValue: string,
-    placeholder: string
+    label?: string,
+    type?: string,
+    register?: Function,
+    errors?: {
+        [char: string]: { [char: string]: string }
+    } | undefined,
+    required?: boolean,
+    pattern?: string,
+    defaultValue?: string,
+    placeholder?: string
 }
 export function InputWithLabel({ name, label, type, register, errors, required, pattern, defaultValue, placeholder }: InputWithLabelProps) {
     return (
-        <label className="text-sm text-gray-500 space-y-2">
-            {label ?? name}
+        <label className="text-sm text-gray-500 space-y-2 flex flex-col">
+            <p className="capitalize flex justify-between">
+                <span>{label ?? name}</span>
+                {
+                    errors?.[name] && <span className="text-red-600 normal-case">{errors[name].message}</span>
+                }
+            </p>
             <input
                 type={type ?? "text"}
                 name={name}
                 defaultValue={defaultValue}
                 placeholder={placeholder}
                 className={errors?.[name] && "error"}
-                ref={register?.({
+                {...register?.(name, {
                     pattern: pattern ? validatePattern[pattern] : {},
                     required: required ? "This field is required" : false
                 })}
