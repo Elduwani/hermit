@@ -84,11 +84,10 @@ model Course {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  email     String   @unique
-  firstName String
-  lastName  String
-  majorId   Int
-  Major     Major    @relation(fields: [majorId], references: [id])
+  name      String   @unique
+  code      String   @unique
   Level     Level?   @relation(fields: [levelId], references: [id])
   levelId   Int?
+  Major     Major?   @relation(fields: [majorId], references: [id])
+  majorId   Int?
 }

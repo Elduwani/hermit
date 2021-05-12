@@ -1,12 +1,40 @@
+import { GetStaticProps } from 'next'
+import Link from "next/link"
 import PageContainer from "components/PageContainer";
+import { Faculty } from '.prisma/client';
+import { prisma } from "../utils/fetch"
 
-export default function Home() {
+type Props = {
+  faculties: Faculty[],
+}
+
+export default function Home({ faculties }: Props) {
+
   return (
     <PageContainer title="Hermit">
-      <h1 className="text-4xl font-bold text-center space-y-2">
-        Home <span className="text-blue-600">Page!</span>
-        {/* <span className="block text-2xl text-gray-500 font-normal">Sign in to your account</span> */}
-      </h1>
+      <div className="border">
+        {
+          faculties.map((faculty) => {
+            return (
+              <div className="capitalize" key={faculty.id}>
+                <Link href={`/faculty/${encodeURIComponent(faculty.id)}`}>
+                  <a>{faculty.name}</a>
+                </Link>
+              </div>
+            )
+          })
+        }
+      </div>
     </PageContainer>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const faculties = await prisma.faculty.findMany()
+
+  return {
+    props: {
+      faculties,
+    },
+  }
 }

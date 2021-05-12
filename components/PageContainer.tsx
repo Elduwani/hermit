@@ -1,3 +1,4 @@
+import Link from "next/link"
 import styles from "styles/Home.module.scss"
 import HTMLHead from "./Head"
 
@@ -11,7 +12,12 @@ export default function PageContainer({ title, hasFooter, children }: Props) {
         <div className={styles.container}>
             {title && <HTMLHead title={title} />}
 
-            <main className={"w-full flex flex-1 flex-col justify-center items-center space-y-8"}>
+            <main className={"w-full flex flex-1 flex-col space-y-6 p-6"}>
+                <h1 className="text-4xl font-bold">
+                    <Link href="/">
+                        <a>Home <span className="text-blue-600">Page!</span></a>
+                    </Link>
+                </h1>
                 {children}
             </main>
             {

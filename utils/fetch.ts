@@ -1,8 +1,9 @@
+import { PrismaClient } from ".prisma/client"
 import axios from "axios"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 
 const baseURL = process.env['NODE_ENV'] === "development" ? `http://localhost:3000/` : `https://hermit.netlifyapp.com`
-
+export const prisma = new PrismaClient()
 interface FetchProps {
     url: string,
     key: string,
@@ -13,7 +14,7 @@ export function useFetch({ url, key, enabled = true, keepPreviousData = false }:
     const address = url ?? key
 
     const handleFetch = async () => {
-        console.log("fetching " + address)
+        // console.log("fetching " + address)
         if (key || url) {
             const response = await axios.get(address)
             return response.data
