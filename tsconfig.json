@@ -27,6 +27,7 @@
     ],
     "include": [
         "**/*.ts",
-        "**/*.tsx"
+        "**/*.tsx",
+        "prisma/seed.js",
     ]
 }

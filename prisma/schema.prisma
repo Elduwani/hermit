@@ -42,14 +42,6 @@ model Major {
   courses      Course[]
 }
 
-model Level {
-  id       Int       @id @default(autoincrement())
-  name     String
-  level    Int
-  students Student[]
-  courses  Course[]
-}
-
 model Student {
   id           Int        @id @default(autoincrement())
   createdAt    DateTime   @default(now())
@@ -63,8 +55,7 @@ model Student {
   department   Department @relation(fields: [departmentId], references: [id])
   faculty      Faculty    @relation(fields: [facultyId], references: [id])
   facultyId    Int // relation scalar field (used in the `@relation` attribute above)
-  Level        Level?     @relation(fields: [levelId], references: [id])
-  levelId      Int?
+  level        Int?
 }
 
 model Lecturer {
@@ -75,7 +66,7 @@ model Lecturer {
   majorId      Int
   title        String
   department   Department @relation(fields: [departmentId], references: [id])
-  faculty      Faculty    @relation(fields: [facultyId], references: [id])
+  Faculty      Faculty    @relation(fields: [facultyId], references: [id])
   departmentId Int
   facultyId    Int // relation scalar field (used in the `@relation` attribute above)
 }
@@ -84,10 +75,12 @@ model Course {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String   @unique
+  title     String   @unique
   code      String   @unique
-  Level     Level?   @relation(fields: [levelId], references: [id])
-  levelId   Int?
+  semester  Int?
+  credit    Int
+  elective  Boolean  @default(false)
+  level     Int?
   Major     Major?   @relation(fields: [majorId], references: [id])
   majorId   Int?
 }
