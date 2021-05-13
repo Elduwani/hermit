@@ -2,6 +2,7 @@ import { GetStaticProps } from "next";
 import PageContainer from "components/PageContainer";
 import { Faculty, Department } from '.prisma/client';
 import { prisma } from "../../utils/fetch"
+import Link from "next/link";
 
 type Props = {
     faculty: Faculty,
@@ -20,7 +21,9 @@ export default function Index({ faculty, departments }: Props) {
                     departments.map((dept) => {
                         return (
                             <div className="capitalize" key={dept.id}>
-                                {dept.name}
+                                <Link href={`/department/${dept.id}`}>
+                                    <a>{dept.name}</a>
+                                </Link>
                             </div>
                         )
                     })

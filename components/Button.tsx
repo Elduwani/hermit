@@ -45,7 +45,7 @@ function getClasses(variant: string | undefined, disabled: boolean, border?: str
         case "solid-gray":
             return `${defaultClass} ${checkDisabled("bg-gray-600 text-white")}`
         case "solid-blue":
-            return `${defaultClass} ${checkDisabled("bg-blue-500 text-white")}`
+            return `${defaultClass} ${checkDisabled("bg-blue-600 text-white")}`
         case "light-blue":
             return `${defaultClass} ${checkDisabled("bg-blue-50 border border-blue-200 text-blue-700")}`
         case "light-red":
@@ -61,6 +61,6 @@ function getClasses(variant: string | undefined, disabled: boolean, border?: str
         case "white":
             return `${defaultClass} bg-white text-gray-700`
         default:
-            return `${defaultClass} ${checkDisabled("bg-red-600 text-white")}`
+            return `${defaultClass} ${checkDisabled("bg-blue-600 text-white")}`
     }
 }
