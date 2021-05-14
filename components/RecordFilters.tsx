@@ -1,19 +1,26 @@
-import { useState } from "react"
+import React, { ChangeEvent, useState } from "react"
 import { _TableHeader } from "utils/types"
 import Button from "./Button"
+import SwitchElement from "./FormComponents"
 import PopOver from "./PopOver"
 
 const styles = {
-    main: "bg-gray-500 hover:bg-gray-700 flex text-sm font-medium rounded overflow-hidden cursor-pointer",
-    left: "bg-gray-300 bg-opacity-70 px-2 py-1 text-gray-900",
+    main: "bg-gray-500 hover:bg-gray-700 flex text-sm rounded overflow-hidden cursor-pointer",
+    left: "bg-gray-300 bg-opacity-70 px-2 py-1 text-gray-900 font-medium",
     right: "bg-white bg-opacity-90 px-2 py-1 text-gray-400",
+    rightActive: "bg-yellow-200 bg-opacity-90 px-2 py-1 text-gray-800 font-medium",
 }
 
 export function Fields({ options, setOptions }: { options: _TableHeader, setOptions: Function }) {
+    const deselected = options.reduce((acc, curr) => {
+        if (!curr.selected) acc++
+        return acc
+    }, 0)
+
     const Trigger = () => (
         <div className={styles.main}>
             <div className={styles.left}>Fields</div>
-            <div className={styles.right}>All</div>
+            <div className={deselected > 0 ? styles.rightActive : styles.right}>{deselected > 0 ? options.length - deselected : "All"}</div>
         </div>
     )
 
@@ -56,6 +63,8 @@ export function Fields({ options, setOptions }: { options: _TableHeader, setOpti
 }
 
 export function Filters() {
+    const [state, setState] = useState({ rows: 100, skip: 0, elective: "all" })
+
     const Trigger = () => (
         <div className="relative">
             <div className={styles.main}>
@@ -65,15 +74,42 @@ export function Filters() {
         </div>
     )
 
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        if (Array.isArray(e)) {
+            let [name, value] = e
+            setState(prevState => ({ ...prevState, [name]: value }))
+        } else {
+            setState(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
+        }
+    }
+
     return (
 
         <PopOver button={Trigger}>
-            <div className="p-6 bg-white">
-                <h3>Rows</h3>
-                <input type="text" name="text" />
-                <h3>Skip</h3>
-                <input type="text" name="text" />
-                <Button>Got it, thanks</Button>
+            <div className="p-6 bg-white space-y-4">
+                <div className="flex space-x-4">
+                    <label htmlFor="rows" className="space-y-2 block">
+                        <span>Rows</span>
+                        <input type="text" name="rows" value={state.rows} onChange={handleChange} />
+                    </label>
+                    <label htmlFor="skip" className="space-y-2 block">
+                        <span>Skip</span>
+                        <input type="text" name="skip" value={state.skip} onChange={handleChange} />
+                    </label>
+                </div>
+                <label htmlFor="credit" className="space-y-2 block">
+                    <span>Credit</span>
+                    <input type="text" name="credit" value={state.rows} onChange={handleChange} />
+                </label>
+                <label htmlFor="semester" className="space-y-2 block">
+                    <span>Semester</span>
+                    <input type="text" name="semester" value={state.rows} onChange={handleChange} />
+                </label>
+                <label htmlFor="elective" className="space-y-2 block">
+                    <span>Semester</span>
+                    <SwitchElement name="elective" enabled={state.elective} onChange={handleChange} />
+                </label>
+                <Button>Add Filter</Button>
             </div>
         </PopOver>
     )

@@ -15,11 +15,12 @@ interface Props {
 const headers: _TableHeader = [
     { name: "title" },
     { name: "course_code", key: "code" },
-    { name: "credit" },
-    { name: "semester" },
-    { name: "level" },
+    { name: "credit", filterBy: true },
+    { name: "semester", filterBy: true },
+    { name: "level", filterBy: true },
     {
         name: "elective",
+        filterBy: true,
         modifier: (val) => !!val ? "yes" : "no"
     },
 ]
