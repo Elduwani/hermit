@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, ReactElement } from "react";
 import Button from "./Button";
 
 interface Props {
@@ -19,7 +19,7 @@ export default function Table({ headers, data = [], isLoading, setOffset }: Prop
         <div className={`h-full bg-white border rounded-lg overflow-y-auto scrollbar shadow-lg`}>
             <table className="bg-white border-collapse min-w-full" ref={containerRef}>
                 <thead>
-                    <tr>
+                    <tr className="divide-x">
                         {
                             headers.map((elem, i) => {
                                 const { name, key } = elem
@@ -59,7 +59,7 @@ export default function Table({ headers, data = [], isLoading, setOffset }: Prop
 function TableRow({ data, headers }: { data: { [char: string]: any }, headers: Props["headers"] }) {
 
     return (
-        <tr className="py-2 px-4 h-12">
+        <tr className="py-2 px-4 h-12 divide-x">
             {
                 headers.map((elem, index) => {
                     const { key, name, modifier } = elem
@@ -76,5 +76,16 @@ function TableRow({ data, headers }: { data: { [char: string]: any }, headers: P
                 })
             }
         </tr>
+    )
+}
+
+export function TableFilters({ options }: { options: ReactElement[] }) {
+
+    return (
+        <div className="flex space-x-4">
+            {
+                options.map((Option) => Option)
+            }
+        </div>
     )
 }

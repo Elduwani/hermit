@@ -11,79 +11,77 @@ generator client {
 }
 
 model Faculty {
-  id          Int          @id @default(autoincrement())
+  id          String       @id @default(cuid())
   name        String       @unique
   departments Department[]
-  Major       Major[]
+  Majors      Major[]
   Student     Student[]
   Lecturer    Lecturer[]
 }
 
 model Department {
-  id        Int        @id @default(autoincrement())
+  id        String     @id @default(cuid())
   name      String
-  faculty   Faculty    @relation(fields: [facultyId], references: [id])
-  facultyId Int // relation scalar field (used in the `@relation` attribute above)
-  majorId   Int?
+  Faculty   Faculty    @relation(fields: [faculty], references: [id])
+  faculty   String // relation scalar field (used in the `@relation` attribute above)
   majors    Major[]
   students  Student[]
   lecturers Lecturer[]
   courses   Course[]
-  // levels    Level[]
 }
 
 model Major {
-  id           Int        @id @default(autoincrement())
-  name         String
-  students     Student?
-  departmentId Int
-  department   Department @relation(fields: [departmentId], references: [id])
-  faculty      Faculty    @relation(fields: [facultyId], references: [id])
-  facultyId    Int // relation scalar field (used in the `@relation` attribute above)
-  courses      Course[]
+  id         String     @id @default(cuid())
+  name       String
+  students   Student?
+  Department Department @relation(fields: [department], references: [id])
+  department String
+  Faculty    Faculty    @relation(fields: [faculty], references: [id])
+  faculty    String // relation scalar field (used in the `@relation` attribute above)
+  courses    Course[]
 }
 
 model Student {
-  id           Int        @id @default(autoincrement())
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  email        String     @unique
-  firstName    String
-  lastName     String
-  majorId      Int?
-  major        Major?     @relation(fields: [majorId], references: [id])
-  departmentId Int
-  department   Department @relation(fields: [departmentId], references: [id])
-  faculty      Faculty    @relation(fields: [facultyId], references: [id])
-  facultyId    Int // relation scalar field (used in the `@relation` attribute above)
-  level        Int?
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  email      String     @unique
+  firstName  String
+  lastName   String
+  Major      Major?     @relation(fields: [major], references: [id])
+  major      String?
+  department String
+  Department Department @relation(fields: [department], references: [id])
+  Faculty    Faculty    @relation(fields: [faculty], references: [id])
+  faculty    String // relation scalar field (used in the `@relation` attribute above)
+  level      Int?
 }
 
 model Lecturer {
-  id           Int        @id @default(autoincrement())
-  email        String     @unique
-  firstName    String
-  lastName     String
-  majorId      Int
-  title        String
-  department   Department @relation(fields: [departmentId], references: [id])
-  Faculty      Faculty    @relation(fields: [facultyId], references: [id])
-  departmentId Int
-  facultyId    Int // relation scalar field (used in the `@relation` attribute above)
+  id         String     @id @default(cuid())
+  email      String     @unique
+  firstName  String
+  lastName   String
+  majorId    Int
+  title      String
+  Department Department @relation(fields: [department], references: [id])
+  Faculty    Faculty    @relation(fields: [faculty], references: [id])
+  department String
+  faculty    String // relation scalar field (used in the `@relation` attribute above)
 }
 
 model Course {
-  id           Int         @id @default(autoincrement())
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  title        String      @unique
-  code         String      @unique
-  semester     Int?
-  credit       Int
-  elective     Boolean     @default(false)
-  level        Int?
-  Major        Major?      @relation(fields: [majorId], references: [id])
-  majorId      Int?
-  Department   Department? @relation(fields: [departmentId], references: [id])
-  departmentId Int?
+  id         String      @id @default(cuid())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  title      String      @unique
+  code       String      @unique
+  semester   Int?
+  credit     Int
+  elective   Boolean     @default(false)
+  level      Int?
+  Major      Major?      @relation(fields: [major], references: [id])
+  major      String?
+  Department Department? @relation(fields: [department], references: [id])
+  department String?
 }

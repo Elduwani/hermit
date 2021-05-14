@@ -1,4 +1,3 @@
-import { GetStaticProps } from "next";
 import PageContainer from "components/PageContainer";
 import { Faculty, Department } from '.prisma/client';
 import { prisma } from "../../utils/fetch"
@@ -38,7 +37,7 @@ export const getStaticPaths = async () => {
 
     // Get the paths we want to pre-render based on posts
     const paths = faculties.map((faculty) => ({
-        params: { id: String(faculty.id) },
+        params: { id: faculty.id },
     }))
 
     return {
@@ -47,11 +46,17 @@ export const getStaticPaths = async () => {
     };
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const faculty = await prisma.faculty.findUnique({ where: { id: +params?.id! } })
+interface Params {
+    params: {
+        id: string
+    }
+}
+
+export const getStaticProps = async ({ params }: Params) => {
+    const faculty = await prisma.faculty.findUnique({ where: { id: params.id } })
     const departments = await prisma.department.findMany({
         where: {
-            facultyId: +params?.id!
+            faculty: params.id
         }
     })
 

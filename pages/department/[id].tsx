@@ -1,9 +1,9 @@
-import { GetStaticProps } from "next";
 import PageContainer from "components/PageContainer";
 import { Department, Course } from '.prisma/client';
 import { prisma } from "../../utils/fetch"
-import Table from "../../components/Table"
+import Table, { TableFilters } from "../../components/Table"
 import Button from "components/Button";
+import { Fields, Filters, Showing } from "components/RecordFilters";
 
 type Props = {
     courses: Course[],
@@ -17,7 +17,16 @@ export default function Index({ courses, department }: Props) {
         { name: "credit" },
         { name: "semester" },
         { name: "level" },
-        { name: "elective", modifier: (val: string | boolean | null) => !!val ? "yes" : "no" },
+        {
+            name: "elective",
+            modifier: (val: string | boolean | null) => !!val ? "yes" : "no"
+        },
+    ]
+
+    const tableOptions = [
+        <Filters key={1} />,
+        <Fields key={2} options={tableHeaders} />,
+        <Showing key={3} />,
     ]
 
     return (
@@ -34,10 +43,13 @@ export default function Index({ courses, department }: Props) {
             </div>
             {
                 courses.length > 0 &&
-                <Table
-                    headers={tableHeaders}
-                    data={courses}
-                />
+                <>
+                    <TableFilters options={tableOptions} />
+                    <Table
+                        headers={tableHeaders}
+                        data={courses}
+                    />
+                </>
             }
         </PageContainer>
     )
@@ -48,15 +60,20 @@ export const getStaticPaths = async () => {
 
     // Get the paths we want to pre-render based on posts
     const paths = departments.map((dept) => ({
-        params: { id: String(dept.id) },
+        params: { id: dept.id },
     }))
 
     return { paths, fallback: false }
 }
+interface Params {
+    params: {
+        id: string
+    }
+}
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const department = await prisma.department.findUnique({ where: { id: +params?.id! } })
-    const courses = await prisma.course.findMany({ where: { departmentId: +params?.id! } })
+export const getStaticProps = async ({ params }: Params) => {
+    const department = await prisma.department.findUnique({ where: { id: params.id } })
+    const courses = await prisma.course.findMany({ where: { department: params.id } })
 
     return {
         props: { department, courses }

@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.2.0",
     "@prisma/client": "2.20.1",
     "@tailwindcss/forms": "^0.3.2",
     "axios": "^0.21.1",
