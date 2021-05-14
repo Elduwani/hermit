@@ -1,5 +1,4 @@
-import { useRef, ReactElement } from "react";
-import Button from "./Button";
+import { useRef } from "react";
 
 interface Props {
     headers: {
@@ -76,16 +75,5 @@ function TableRow({ data, headers }: { data: { [char: string]: any }, headers: P
                 })
             }
         </tr>
-    )
-}
-
-export function TableFilters({ options }: { options: ReactElement[] }) {
-
-    return (
-        <div className="flex space-x-4">
-            {
-                options.map((Option) => Option)
-            }
-        </div>
     )
 }
