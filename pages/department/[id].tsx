@@ -58,7 +58,7 @@ export default function Index({ courses, department }: Props) {
                             clearOptions={() => setFilteredRecords([])}
                         />
                         <Fields options={tableHeaders} setOptions={setTableHeaders} />
-                        <Showing showing={courses.length} total={courses.length} />
+                        <Showing showing={data.length} total={courses.length} />
                     </div>
                     <Table
                         headers={selectedHeaders}

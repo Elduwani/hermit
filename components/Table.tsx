@@ -15,7 +15,7 @@ export default function Table({ headers, data = [], isLoading, setOffset }: Prop
     const containerRef = useRef<HTMLTableElement>(null)
 
     return (
-        <div className={`h-full bg-white border rounded-lg overflow-y-auto scrollbar shadow-lg`}>
+        <div className={`bg-white border rounded-lg overflow-y-auto scrollbar shadow-lg`}>
             <table className="bg-white border-collapse min-w-full" ref={containerRef}>
                 <thead>
                     <tr className="divide-x">

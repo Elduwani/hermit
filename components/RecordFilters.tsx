@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import { _TableHeader, _StringKeys } from "utils/types"
-import { VscCheck, VscClearAll } from "react-icons/vsc"
+import { VscCheck, VscClose } from "react-icons/vsc"
 import Button from "./Button"
 import PopOver from "./PopOver"
 
 const styles = {
     main: "bg-gray-500 hover:bg-gray-700 flex text-sm rounded overflow-hidden cursor-pointer",
-    left: "bg-gray-300 bg-opacity-70 px-2 py-1 text-gray-900 font-medium",
+    left: "bg-white bg-opacity-70 px-2 py-1 text-gray-900 font-medium",
     right: "bg-white bg-opacity-90 px-2 py-1 text-gray-400",
     rightActive: "bg-yellow-200 bg-opacity-90 px-2 py-1 text-gray-800 font-medium",
 }
@@ -77,13 +77,14 @@ export function Filters(
     }, {})
 
     const [state, setState] = useState(defaultState)
+    const activeFilters = Object.values(state).filter(e => e !== undefined).length
 
     const components = () => {
         const array = []
         for (const key in options) {
             array.push(
                 <div key={key} className="space-y-2 block capitalize">
-                    <p>{key}</p>
+                    <p className="text-gray-600 text-sm">{key}</p>
                     <div className="flex rounded-lg bg-blue-50">
                         {
                             options[key].sort().map((option, i) => {
@@ -112,7 +113,9 @@ export function Filters(
         <div className="relative">
             <p className={styles.main}>
                 <span className={styles.left}>Filters</span>
-                <span className={styles.right}>None</span>
+                <span className={activeFilters ? styles.rightActive : styles.right}>
+                    {activeFilters ? activeFilters : "None"}
+                </span>
             </p>
         </div>
     )
@@ -137,19 +140,22 @@ export function Filters(
     return (
 
         <PopOver button={Trigger}>
-            <div className="p-6 bg-white space-y-3">
+            <div className="p-6 bg-white space-y-4">
                 {
                     components()
                 }
-                <div className="buttons space-y-3 pt-4">
+                <div className="buttons space-y-3 pt-2">
                     <Button onClick={applyFilters}>
                         <VscCheck className="text-xl" />
-                        <span>Apply Filters</span>
+                        <span>Apply</span>
                     </Button>
-                    <Button variant="light-blue" onClick={clearFilters}>
-                        <VscClearAll className="text-xl" />
-                        <span></span>Clear Filters
-                    </Button>
+                    {
+                        activeFilters > 0 &&
+                        <Button variant="light-blue" onClick={clearFilters}>
+                            <VscClose className="text-xl" />
+                            <span>Clear</span>
+                        </Button>
+                    }
                 </div>
             </div>
         </PopOver>
