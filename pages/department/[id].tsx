@@ -6,13 +6,14 @@ import Button from "components/Button";
 import { Fields, Filters, Showing, FilterOptions } from "components/RecordFilters";
 import { _TableHeader } from "utils/types";
 import { useState } from "react";
+import { getUniqueEntries } from "utils/utils";
 
 interface Props {
     courses: Course[],
     department: Department
 }
 
-const headers: _TableHeader = [
+const headers: _TableHeader[] = [
     { name: "title" },
     { name: "course_code", key: "code" },
     { name: "credit", filterBy: true },
@@ -27,10 +28,11 @@ const headers: _TableHeader = [
 
 export default function Index({ courses, department }: Props) {
     const [tableHeaders, setTableHeaders] = useState(headers.map(header => ({ ...header, selected: true })))
-    const options = tableHeaders.filter(header => header.selected)
+    const selectedHeaders = tableHeaders.filter(header => header.selected)
+    const filterOptions = getUniqueEntries(headers, courses, "filterBy")
 
     const tableOptions = [
-        <Filters key={1} />,
+        <Filters key={1} options={filterOptions} />,
         <Fields
             key={2}
             options={tableHeaders}
@@ -56,7 +58,7 @@ export default function Index({ courses, department }: Props) {
                 <>
                     <FilterOptions options={tableOptions} />
                     <Table
-                        headers={options}
+                        headers={selectedHeaders}
                         data={courses}
                     />
                 </>

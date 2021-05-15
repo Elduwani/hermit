@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useState } from "react"
-import { _TableHeader } from "utils/types"
+import { _TableHeader, _StringKeys } from "utils/types"
 import Button from "./Button"
-import SwitchElement from "./FormComponents"
 import PopOver from "./PopOver"
 
 const styles = {
@@ -11,17 +10,17 @@ const styles = {
     rightActive: "bg-yellow-200 bg-opacity-90 px-2 py-1 text-gray-800 font-medium",
 }
 
-export function Fields({ options, setOptions }: { options: _TableHeader, setOptions: Function }) {
+export function Fields({ options, setOptions }: { options: _TableHeader[], setOptions: Function }) {
     const deselected = options.reduce((acc, curr) => {
         if (!curr.selected) acc++
         return acc
     }, 0)
 
     const Trigger = () => (
-        <div className={styles.main}>
-            <div className={styles.left}>Fields</div>
-            <div className={deselected > 0 ? styles.rightActive : styles.right}>{deselected > 0 ? options.length - deselected : "All"}</div>
-        </div>
+        <p className={styles.main}>
+            <span className={styles.left}>Fields</span>
+            <span className={deselected > 0 ? styles.rightActive : styles.right}>{deselected > 0 ? options.length - deselected : "All"}</span>
+        </p>
     )
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,54 +61,62 @@ export function Fields({ options, setOptions }: { options: _TableHeader, setOpti
     )
 }
 
-export function Filters() {
-    const [state, setState] = useState({ rows: 100, skip: 0, elective: "all" })
+export function Filters({ options, setOptions }: { options: { [key: string]: any[] }, setOptions: Function }) {
+    const [state, setState] = useState(() => {
+        const res: _StringKeys = {}
+        for (const key in options) {
+            res[key] = "all"
+        }
+        return res
+    })
+
+    const components = () => {
+        const array = []
+        for (const key in options) {
+            array.push(
+                <div key={key} className="space-y-2 block capitalize">
+                    <p>{key}</p>
+                    <div className="flex rounded-lg bg-blue-50">
+                        {
+                            options[key].sort().map((option, i) => {
+                                const isSelected = option === state[key]
+                                const value = typeof option === "boolean" ? String(option) : option
+                                return (
+                                    <a key={i} href="#"
+                                        className={`inline-flex flex-1 justify-center px-4 py-2 text-sm font-medium 
+                                            ${isSelected ? "text-white bg-blue-600 shadow-md" : "text-blue-900 bg-blue-50"} 
+                                            border border-transparent rounded-lg focus:outline-none focus-visible:ring-2 
+                                            focus-visible:ring-offset-2 focus-visible:ring-blue-600 focus-visible:z-10`
+                                        }
+                                        onClick={() => setState(prev => ({ ...prev, [key]: isSelected ? "all" : option }))}
+                                    >{value}</a>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            )
+        }
+        return array
+    }
 
     const Trigger = () => (
         <div className="relative">
-            <div className={styles.main}>
-                <div className={styles.left}>Filters</div>
-                <div className={styles.right}>None</div>
-            </div>
+            <p className={styles.main}>
+                <span className={styles.left}>Filters</span>
+                <span className={styles.right}>None</span>
+            </p>
         </div>
     )
-
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        if (Array.isArray(e)) {
-            let [name, value] = e
-            setState(prevState => ({ ...prevState, [name]: value }))
-        } else {
-            setState(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
-        }
-    }
 
     return (
 
         <PopOver button={Trigger}>
             <div className="p-6 bg-white space-y-4">
-                <div className="flex space-x-4">
-                    <label htmlFor="rows" className="space-y-2 block">
-                        <span>Rows</span>
-                        <input type="text" name="rows" value={state.rows} onChange={handleChange} />
-                    </label>
-                    <label htmlFor="skip" className="space-y-2 block">
-                        <span>Skip</span>
-                        <input type="text" name="skip" value={state.skip} onChange={handleChange} />
-                    </label>
-                </div>
-                <label htmlFor="credit" className="space-y-2 block">
-                    <span>Credit</span>
-                    <input type="text" name="credit" value={state.rows} onChange={handleChange} />
-                </label>
-                <label htmlFor="semester" className="space-y-2 block">
-                    <span>Semester</span>
-                    <input type="text" name="semester" value={state.rows} onChange={handleChange} />
-                </label>
-                <label htmlFor="elective" className="space-y-2 block">
-                    <span>Semester</span>
-                    <SwitchElement name="elective" enabled={state.elective} onChange={handleChange} />
-                </label>
-                <Button>Add Filter</Button>
+                {
+                    components()
+                }
+                <Button>Apply Filter</Button>
             </div>
         </PopOver>
     )
@@ -118,10 +125,10 @@ export function Filters() {
 export function Showing({ showing, total }: { showing: number, total: number }) {
     return (
         <div className="relative">
-            <div className={styles.main}>
-                <div className={styles.left}>Showing</div>
-                <div className={styles.right}>{showing} of {total.toLocaleString("en-GB")}</div>
-            </div>
+            <p className={styles.main}>
+                <span className={styles.left}>Showing</span>
+                <span className={styles.right}>{showing} of {total.toLocaleString("en-GB")}</span>
+            </p>
         </div>
     )
 }
