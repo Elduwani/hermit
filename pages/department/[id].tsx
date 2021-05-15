@@ -3,8 +3,8 @@ import { Department, Course } from '.prisma/client';
 import { prisma } from "../../utils/fetch"
 import Table from "../../components/Table"
 import Button from "components/Button";
-import { Fields, Filters, Showing, FilterOptions } from "components/RecordFilters";
-import { _TableHeader } from "utils/types";
+import { Fields, Filters, Showing } from "components/RecordFilters";
+import { _StringKeys, _TableHeader } from "utils/types";
 import { useState } from "react";
 import { getUniqueEntries } from "utils/utils";
 
@@ -29,17 +29,11 @@ const headers: _TableHeader[] = [
 export default function Index({ courses, department }: Props) {
     const [tableHeaders, setTableHeaders] = useState(headers.map(header => ({ ...header, selected: true })))
     const selectedHeaders = tableHeaders.filter(header => header.selected)
-    const filterOptions = getUniqueEntries(headers, courses, "filterBy")
 
-    const tableOptions = [
-        <Filters key={1} options={filterOptions} />,
-        <Fields
-            key={2}
-            options={tableHeaders}
-            setOptions={setTableHeaders}
-        />,
-        <Showing key={3} showing={courses.length} total={courses.length} />,
-    ]
+    const [filteredRecords, setFilteredRecords] = useState<Course[]>([])
+    const data = filteredRecords.length ? filteredRecords : courses
+
+    const filterOptions = getUniqueEntries(headers, courses, "filterBy")
 
     return (
         <PageContainer title="Hermit">
@@ -56,10 +50,19 @@ export default function Index({ courses, department }: Props) {
             {
                 courses.length > 0 &&
                 <>
-                    <FilterOptions options={tableOptions} />
+                    <div className="flex space-x-4">
+                        <Filters
+                            options={filterOptions}
+                            setOptions={setFilteredRecords}
+                            records={courses}
+                            clearOptions={() => setFilteredRecords([])}
+                        />
+                        <Fields options={tableHeaders} setOptions={setTableHeaders} />
+                        <Showing showing={courses.length} total={courses.length} />
+                    </div>
                     <Table
                         headers={selectedHeaders}
-                        data={courses}
+                        data={data}
                     />
                 </>
             }

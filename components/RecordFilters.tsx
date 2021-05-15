@@ -1,5 +1,6 @@
-import React, { ChangeEvent, useState } from "react"
+import React, { useState } from "react"
 import { _TableHeader, _StringKeys } from "utils/types"
+import { VscCheck, VscClearAll } from "react-icons/vsc"
 import Button from "./Button"
 import PopOver from "./PopOver"
 
@@ -61,14 +62,21 @@ export function Fields({ options, setOptions }: { options: _TableHeader[], setOp
     )
 }
 
-export function Filters({ options, setOptions }: { options: { [key: string]: any[] }, setOptions: Function }) {
-    const [state, setState] = useState(() => {
-        const res: _StringKeys = {}
-        for (const key in options) {
-            res[key] = "all"
+export function Filters(
+    { records, options, setOptions, clearOptions }:
+        {
+            records: _StringKeys[],
+            options: { [key: string]: any[] },
+            setOptions: Function,
+            clearOptions: Function
         }
-        return res
-    })
+) {
+    const defaultState = Object.entries(options).reduce((acc: _StringKeys, curr) => {
+        acc[curr[0]] = undefined
+        return acc
+    }, {})
+
+    const [state, setState] = useState(defaultState)
 
     const components = () => {
         const array = []
@@ -88,7 +96,7 @@ export function Filters({ options, setOptions }: { options: { [key: string]: any
                                             border border-transparent rounded-lg focus:outline-none focus-visible:ring-2 
                                             focus-visible:ring-offset-2 focus-visible:ring-blue-600 focus-visible:z-10`
                                         }
-                                        onClick={() => setState(prev => ({ ...prev, [key]: isSelected ? "all" : option }))}
+                                        onClick={() => setState(prev => ({ ...prev, [key]: isSelected ? undefined : option }))}
                                     >{value}</a>
                                 )
                             })
@@ -109,14 +117,40 @@ export function Filters({ options, setOptions }: { options: { [key: string]: any
         </div>
     )
 
+    function applyFilters() {
+        const entries = Object.entries(state)
+        const validEntries = entries.filter(([, v]) => v !== undefined)
+
+        if (!validEntries.length) { // all are undefined
+            setOptions([])
+        } else {
+            const res = records.filter((record: _StringKeys) => validEntries.every(([k, v]) => record[k] === v))
+            res.length && setOptions(res)
+        }
+    }
+
+    function clearFilters() {
+        setState(defaultState)
+        clearOptions()
+    }
+
     return (
 
         <PopOver button={Trigger}>
-            <div className="p-6 bg-white space-y-4">
+            <div className="p-6 bg-white space-y-3">
                 {
                     components()
                 }
-                <Button>Apply Filter</Button>
+                <div className="buttons space-y-3 pt-4">
+                    <Button onClick={applyFilters}>
+                        <VscCheck className="text-xl" />
+                        <span>Apply Filters</span>
+                    </Button>
+                    <Button variant="light-blue" onClick={clearFilters}>
+                        <VscClearAll className="text-xl" />
+                        <span></span>Clear Filters
+                    </Button>
+                </div>
             </div>
         </PopOver>
     )
