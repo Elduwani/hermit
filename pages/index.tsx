@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next'
 import Link from "next/link"
 import PageContainer from "components/PageContainer";
 import { Faculty } from '.prisma/client';
-import { prisma } from "../utils/fetch"
+import prisma from "db"
 
 type Props = {
   faculties: Faculty[],

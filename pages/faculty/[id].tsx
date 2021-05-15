@@ -1,6 +1,6 @@
 import PageContainer from "components/PageContainer";
 import { Faculty, Department } from '.prisma/client';
-import { prisma } from "../../utils/fetch"
+import prisma from "db"
 import Link from "next/link";
 
 type Props = {

@@ -1,9 +1,7 @@
-import { PrismaClient } from ".prisma/client"
 import axios from "axios"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 
 const baseURL = process.env['NODE_ENV'] === "development" ? `http://localhost:3000/` : `https://hermit.netlifyapp.com`
-export const prisma = new PrismaClient()
 interface FetchProps {
     url: string,
     key: string,

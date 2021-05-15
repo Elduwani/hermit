@@ -1,6 +1,6 @@
-import { QueryCache, QueryClient } from "react-query";
+import { QueryCache } from "react-query";
 
-export const queryClientConfig = new QueryClient({
+export const queryClientConfig = {
     queryCache: new QueryCache({
         onError: (error) => {
             console.log(error)
@@ -15,4 +15,4 @@ export const queryClientConfig = new QueryClient({
             refetchOnReconnect: true,
         }
     }
-})
+}

@@ -1,6 +1,6 @@
 import PageContainer from "components/PageContainer";
 import { Department, Course } from '.prisma/client';
-import { prisma } from "../../utils/fetch"
+import prisma from "db"
 import Table from "../../components/Table"
 import Button from "components/Button";
 import { Fields, Filters, Showing } from "components/RecordFilters";
@@ -21,7 +21,6 @@ const headers: _TableHeader[] = [
     { name: "level", filterBy: true },
     {
         name: "elective",
-        filterBy: true,
         modifier: (val) => !!val ? "yes" : "no"
     },
 ]
