@@ -31,7 +31,7 @@ export default function Button({ children, className, onClick, goto, type, disab
 }
 
 function getClasses(variant: string | undefined, disabled: boolean, border?: string): string {
-    const defaultClass = `w-full px-6 max-w-lg outline-none py-0 h-12 rounded-lg flex items-center justify-center hover:opacity-90
+    const defaultClass = `w-full px-6 max-w-lg outline-none py-0 h-12 flex items-center justify-center hover:opacity-90
         space-x-2 whitespace-nowrap focus:outline-none disabled:opacity-50 animated font-medium
         ${!disabled ? "cursor-pointer" : "cursor-default"}
     `
@@ -41,7 +41,7 @@ function getClasses(variant: string | undefined, disabled: boolean, border?: str
         case "outline":
             return `${defaultClass} border ${border ?? "border-gray-300"} bg-white text-gray-600`
         case "light-gray":
-            return `${defaultClass} bg-gray-100 border border-gray-300 text-gray-700`
+            return `${defaultClass} bg-gray-100 border border-gray-800 text-gray-700`
         case "solid-gray":
             return `${defaultClass} ${checkDisabled("bg-gray-600 text-white")}`
         case "solid-blue":
@@ -61,6 +61,6 @@ function getClasses(variant: string | undefined, disabled: boolean, border?: str
         case "white":
             return `${defaultClass} bg-white text-gray-700`
         default:
-            return `${defaultClass} ${checkDisabled("bg-blue-600 text-white")}`
+            return `${defaultClass} ${checkDisabled("bg-blue-700 text-white")}`
     }
 }

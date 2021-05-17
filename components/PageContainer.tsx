@@ -12,7 +12,7 @@ export default function PageContainer({ title, children }: Props) {
             {title && <HTMLHead title={title} />}
             <div className={styles.container + " overflow-hidden"}>
                 <Sidebar />
-                <main className={"w-full flex flex-col space-y-8 p-6 overflow-y-auto border border-red-500"}>
+                <main className={"w-full flex flex-col space-y-8 p-6 overflow-y-auto border-red-500"}>
                     {children}
                 </main>
             </div>

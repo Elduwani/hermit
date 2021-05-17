@@ -5,10 +5,10 @@ import Button from "./Button"
 import PopOver from "./PopOver"
 
 const styles = {
-    main: "bg-gray-500 hover:bg-gray-700 flex text-sm overflow-hidden cursor-pointer border-2 border-gray-600",
-    left: "bg-white bg-opacity-70 px-2 py-1 text-gray-900 font-medium",
-    right: "bg-white bg-opacity-90 px-2 py-1 text-gray-400",
-    rightActive: "bg-yellow-200 bg-opacity-90 px-2 py-1 text-gray-800 font-medium",
+    main: "flex text-sm overflow-hidden cursor-pointer select-none",
+    left: "bg-gray-600 hover:bg-gray-700 px-3 py-1.5 text-white font-medium",
+    right: "bg-white bg-opacity-90 px-3 py-1.5 text-gray-600 border border-gray-900",
+    rightActive: "border border-gray-900 px-3 py-1.5 text-blue-600 font-medium",
 }
 
 export function Fields({ options, setOptions }: { options: _TableHeader[], setOptions: Function }) {
@@ -85,17 +85,17 @@ export function Filters(
             array.push(
                 <div key={key} className="space-y-2 block capitalize">
                     <p className="text-gray-600 text-sm">{key}</p>
-                    <div className="flex rounded-lg bg-blue-50">
+                    <div className="flex bg-gray-100">
                         {
                             options[key].sort().map((option, i) => {
                                 const isSelected = option === state[key]
                                 const value = typeof option === "boolean" ? String(option) : option
                                 return (
                                     <a key={i} href="#"
-                                        className={`inline-flex flex-1 justify-center px-4 py-2 text-sm font-medium 
-                                            ${isSelected ? "text-white bg-blue-600 shadow-md" : "text-blue-900 bg-blue-50"} 
-                                            border border-transparent rounded-lg focus:outline-none focus-visible:ring-2 
-                                            focus-visible:ring-offset-2 focus-visible:ring-blue-600 focus-visible:z-10`
+                                        className={`inline-flex flex-1 justify-center px-4 py-2 text-sm font-medium cursor-pointer
+                                            ${isSelected ? "bg-white text-gray-800 border border-gray-800" : "text-gray-500"} 
+                                            focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-600 
+                                            focus-visible:z-10`
                                         }
                                         onClick={() => setState(prev => ({ ...prev, [key]: isSelected ? undefined : option }))}
                                     >{value}</a>
@@ -141,17 +141,18 @@ export function Filters(
 
         <PopOver button={Trigger}>
             <div className="p-6 bg-white space-y-4">
+                <p className="text-gray-500 text-sm text-center">Click an option to select or deselect</p>
                 {
                     components()
                 }
-                <div className="buttons space-y-3 pt-2">
+                <div className="buttons space-y-3 pt-4">
                     <Button onClick={applyFilters}>
                         <VscCheck className="text-xl" />
                         <span>Apply</span>
                     </Button>
                     {
                         activeFilters > 0 &&
-                        <Button variant="light-blue" onClick={clearFilters}>
+                        <Button variant="light-gray" onClick={clearFilters}>
                             <VscClose className="text-xl" />
                             <span>Clear</span>
                         </Button>

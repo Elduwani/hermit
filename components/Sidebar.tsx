@@ -9,11 +9,11 @@ export default function Sidebar() {
     return (
         <aside className={`${styles.sidebar} flex flex-col py-8 px-4 space-y-8 bg-gray-200`}>
             <Link href="/">
-                <a className="text-4xl border border-red-400 font-bold text-gray-700">Faculty of Arts</a>
+                <a className="text-4xl border-red-400 font-bold text-gray-700">Faculty of Arts</a>
             </Link>
             {
                 isSuccess &&
-                <div className="flex-1 space-y-8 border border-red-500">
+                <div className="flex-1 space-y-8 border-red-500">
                     {
                         departments.map((department: Department) => {
                             const { id, name } = department
