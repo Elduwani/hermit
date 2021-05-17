@@ -35,11 +35,9 @@ export default function Index({ courses, department }: Props) {
     const filterOptions = getUniqueEntries(headers, courses, "filterBy")
 
     return (
-        <PageContainer title="Hermit">
+        <PageContainer>
             <div className="flex justify-between">
-                <div className="capitalize">
-                    {department.name}
-                </div>
+                <h1 className="text-4xl border font-bold text-gray-700 capitalize">{department.name}</h1>
                 <span>
                     <Button>
                         Add Courses

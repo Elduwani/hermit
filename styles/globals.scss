@@ -30,6 +30,42 @@
 
 html,
 body {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  overflow: hidden;
+  height: 100vh;
 }
+@mixin animation($time: 0.3s){
+  transition: all $time ease;
+}
+@mixin borderRadius($size:0.5rem) {
+  border-radius: $size;
+}
+// https://stackoverflow.com/a/41096631
+@mixin customScrollBar() {
+  scroll-behavior: smooth;
+
+    &::-webkit-scrollbar{
+      // @include borderRadius;
+      width: 6px;
+      height: 6px;
+    }
+      
+    &::-webkit-scrollbar-track{
+      // @include borderRadius;
+      background: #ffffff;
+    }
+
+    &::-webkit-scrollbar-thumb{
+      background: #bcc1db;
+      // @include borderRadius;
+
+      &:hover{
+        background: #9FA6B2;
+      }
+    }
+    scrollbar-width: thin;
+    scrollbar-height: thin;
+    // scrollbar-color: $clr-gray-4 $clr-gray-5;
+}
+.scrollbar{ @include customScrollBar }
+

@@ -1,30 +1,31 @@
-import { Faculty } from ".prisma/client";
+import { Department } from ".prisma/client";
 import Link from "next/link";
 import styles from "styles/Home.module.scss"
 import { useFetch } from "utils/fetch"
 
 export default function Sidebar() {
-    const { data, isSuccess, isLoading } = useFetch({ key: "faculties", url: "api/faculties" })
-    // console.log(data);
+    const { data: departments, isSuccess } = useFetch({ key: "departments", url: "/api/departments" })
 
     return (
-        <aside className={`${styles.sidebar} flex py-8 px-4 border bg-blue-100`}>
-            <div className="w-full h-full space-y-8">
-                <h1 className="text-4xl font-bold text-gray-700">Faculties</h1>
-                {
-                    isSuccess &&
-                    <div className="space-y-4 border border-red-500">
-                        {
-                            data.map((entry: Faculty) => (
-                                <Link href="/" key={entry.id}>
-                                    <a className="block capitalize">{entry.name}</a>
+        <aside className={`${styles.sidebar} flex flex-col py-8 px-4 space-y-8 bg-gray-200`}>
+            <Link href="/">
+                <a className="text-4xl border border-red-400 font-bold text-gray-700">Faculty of Arts</a>
+            </Link>
+            {
+                isSuccess &&
+                <div className="flex-1 space-y-8 border border-red-500">
+                    {
+                        departments.map((department: Department) => {
+                            const { id, name } = department
+                            return (
+                                <Link href={`/department/${id}`} key={id}>
+                                    <a className="block capitalize">{name}</a>
                                 </Link>
-                            ))
-                        }
-                    </div>
-                }
-            </div>
-            <div className="border border-red-500 w-full h-full">Element</div>
+                            )
+                        })
+                    }
+                </div>
+            }
         </aside>
     )
 }

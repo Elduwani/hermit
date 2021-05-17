@@ -5,7 +5,7 @@ import Button from "./Button"
 import PopOver from "./PopOver"
 
 const styles = {
-    main: "bg-gray-500 hover:bg-gray-700 flex text-sm rounded overflow-hidden cursor-pointer",
+    main: "bg-gray-500 hover:bg-gray-700 flex text-sm overflow-hidden cursor-pointer border-2 border-gray-600",
     left: "bg-white bg-opacity-70 px-2 py-1 text-gray-900 font-medium",
     right: "bg-white bg-opacity-90 px-2 py-1 text-gray-400",
     rightActive: "bg-yellow-200 bg-opacity-90 px-2 py-1 text-gray-800 font-medium",
