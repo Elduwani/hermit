@@ -6,7 +6,7 @@ interface Props {
     children: React.ReactNode,
     title?: string
 }
-export default function PageContainer({ title, children }: Props) {
+export default function PageContainer({ title = "Hermit", children }: Props) {
     return (
         <>
             {title && <HTMLHead title={title} />}

@@ -39,7 +39,7 @@ export default function Index({ courses, department }: Props) {
             <div className="flex justify-between">
                 <h1 className="text-4xl border font-bold text-gray-700 capitalize">{department.name}</h1>
                 <span>
-                    <Button>
+                    <Button variant="light-gray">
                         Add Courses
                     </Button>
                 </span>

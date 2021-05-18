@@ -11,6 +11,9 @@ export default function Sidebar() {
             <Link href="/">
                 <a className="text-4xl border-red-400 font-bold text-gray-700">Faculty of Arts</a>
             </Link>
+            <Link href={`/student`}>
+                <a className="block capitalize">Students</a>
+            </Link>
             {
                 isSuccess &&
                 <div className="flex-1 space-y-8 border-red-500">

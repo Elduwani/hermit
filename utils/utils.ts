@@ -10,10 +10,11 @@ export function getUniqueEntries(
         return acc
     }, [])
 
+
     const filterOptions = records.reduce((acc, curr) => {
         filterKeys.forEach((key: string) => {
             if (acc[key]) acc[key].push(curr[key])
-            else acc[key] = []
+            else acc[key] = [curr[key]]
         })
         return acc
     }, {})
@@ -23,4 +24,8 @@ export function getUniqueEntries(
     }
 
     return filterOptions
+}
+
+export function removeUnderscore(string: string) {
+    return string.replace(/_/gi, " ")
 }

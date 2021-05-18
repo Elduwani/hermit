@@ -3,6 +3,7 @@ import { _TableHeader, _StringKeys } from "utils/types"
 import { VscCheck, VscClose } from "react-icons/vsc"
 import Button from "./Button"
 import PopOver from "./PopOver"
+import { removeUnderscore } from "utils/utils"
 
 const styles = {
     main: "flex text-sm overflow-hidden cursor-pointer select-none",
@@ -39,12 +40,13 @@ export function Fields({ options, setOptions }: { options: _TableHeader[], setOp
                 options.map((opt, index) => {
                     const label = opt.key ?? opt.name
                     const checked = options[index].selected
+                    const name = removeUnderscore(opt.name)
 
                     return (
                         <label
                             key={label}
                             htmlFor={label}
-                            className="bg-white px-4 border-b py-2 flex items-center space-x-4 capitalize hover:bg-gray-100"
+                            className="bg-white px-4 border-b py-3 flex items-center space-x-4 capitalize hover:bg-gray-100"
                         >
                             <input
                                 name={label}
@@ -53,7 +55,7 @@ export function Fields({ options, setOptions }: { options: _TableHeader[], setOp
                                 checked={checked}
                                 data-id={index}
                             />
-                            <span>{label}</span>
+                            <span>{name}</span>
                         </label>
                     )
                 })
@@ -154,7 +156,7 @@ export function Filters(
                         activeFilters > 0 &&
                         <Button variant="light-gray" onClick={clearFilters}>
                             <VscClose className="text-xl" />
-                            <span>Clear</span>
+                            <span>Clear Selection</span>
                         </Button>
                     }
                 </div>
