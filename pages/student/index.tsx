@@ -7,7 +7,6 @@ import { Fields, Filters, Showing } from "components/RecordFilters";
 import { _StringKeys, _TableHeader } from "utils/types";
 import { useState } from "react";
 import { getUniqueEntries } from "utils/utils";
-import Modal from "components/Modal";
 import TabularForm from "components/TabularForm";
 
 interface Props {
@@ -15,21 +14,22 @@ interface Props {
 }
 
 const headers: _TableHeader[] = [
-    { name: "first_name", key: "firstName", useForm: true },
-    { name: "last_name", key: "lastName", useForm: true },
-    { name: "email", useForm: true },
+    { name: "first_name", key: "firstName", useForm: { required: true } },
+    { name: "last_name", key: "lastName", useForm: { required: true } },
+    { name: "email", useForm: { type: "email", required: true } },
     {
         name: "level",
         filterBy: true,
         useForm: {
-            type: "select",
-            options: [100, 200, 300, 400]
+            inputType: "select",
+            options: [100, 200, 300, 400],
+            modifier: (v) => +v
         }
     },
 ]
 
 export default function Index({ students }: Props) {
-    const [modal, setModal] = useState(false)
+    const [showForm, setShowForm] = useState(false)
     const [tableHeaders, setTableHeaders] = useState(headers.map(header => ({ ...header, selected: true })))
     const selectedHeaders = tableHeaders.filter(header => header.selected)
 
@@ -41,9 +41,12 @@ export default function Index({ students }: Props) {
         <PageContainer>
             <div className="flex justify-between">
                 <h1 className="text-4xl border font-bold text-gray-700 capitalize">Students</h1>
-                <span>
-                    <Button variant="light-gray">Add Student</Button>
-                </span>
+                {
+                    !showForm &&
+                    <span>
+                        <Button variant="light-gray" onClick={() => setShowForm(true)}>Add Students</Button>
+                    </span>
+                }
             </div>
             {
                 students.length > 0 &&
@@ -59,10 +62,14 @@ export default function Index({ students }: Props) {
                 </div>
             }
 
-            <TabularForm
-                headers={headers}
-                mutationUrl="students"
-            />
+            {
+                showForm &&
+                <TabularForm
+                    headers={headers}
+                    mutationUrl="students"
+                    close={() => setShowForm(false)}
+                />
+            }
 
             {
                 students.length > 0 &&

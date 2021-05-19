@@ -9,10 +9,11 @@ interface Props {
     disabled?: boolean,
     variant?: 'outline' | 'light-gray' | 'solid-gray' | 'solid-blue' | 'light-blue' | 'solid-red' |
     'light-red' | 'dark-red' | 'darker-red' | 'transparent-text' | 'outline-white' | 'white',
-    border?: string
+    border?: string,
+    form?: string
 }
 
-export default function Button({ children, className, onClick, goto, type, disabled = false, variant, border }: Props) {
+export default function Button({ children, className, onClick, goto, type, form, disabled = false, variant, border }: Props) {
 
     function handleClick() {
         onClick?.()
@@ -26,6 +27,7 @@ export default function Button({ children, className, onClick, goto, type, disab
             className={`${className ?? ""} ${getClasses(variant, disabled, border)}`}
             onClick={handleClick}
             disabled={disabled}
+            form={form ?? ""}
         >{children}</button>
     )
 }
