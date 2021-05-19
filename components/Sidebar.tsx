@@ -7,7 +7,7 @@ export default function Sidebar() {
     const { data: departments, isSuccess } = useFetch({ key: "departments", url: "/api/departments" })
 
     return (
-        <aside className={`${styles.sidebar} flex flex-col py-8 px-4 space-y-8 bg-gray-200`}>
+        <aside className={`${styles.sidebar} flex flex-col p-8 space-y-8 bg-gray-100`}>
             <Link href="/">
                 <a className="text-4xl border-red-400 font-bold text-gray-700">Faculty of Arts</a>
             </Link>

@@ -3,7 +3,8 @@ export interface _TableHeader {
     key?: string,
     modifier?: (val: string | boolean | null) => string,
     selected?: boolean,
-    filterBy?: boolean
+    filterBy?: boolean,
+    useForm?: boolean | { type?: string, options?: any[] }
 }
 
 export interface _StringKeys {

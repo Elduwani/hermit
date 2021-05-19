@@ -8,16 +8,24 @@ import { _StringKeys, _TableHeader } from "utils/types";
 import { useState } from "react";
 import { getUniqueEntries } from "utils/utils";
 import Modal from "components/Modal";
+import TabularForm from "components/TabularForm";
 
 interface Props {
     students: Student[],
 }
 
 const headers: _TableHeader[] = [
-    { name: "first_name", key: "firstName" },
-    { name: "last_name", key: "lastName" },
-    { name: "email" },
-    { name: "level", filterBy: true },
+    { name: "first_name", key: "firstName", useForm: true },
+    { name: "last_name", key: "lastName", useForm: true },
+    { name: "email", useForm: true },
+    {
+        name: "level",
+        filterBy: true,
+        useForm: {
+            type: "select",
+            options: [100, 200, 300, 400]
+        }
+    },
 ]
 
 export default function Index({ students }: Props) {
@@ -39,22 +47,29 @@ export default function Index({ students }: Props) {
             </div>
             {
                 students.length > 0 &&
-                <>
-                    <div className="flex space-x-4">
-                        <Filters
-                            options={filterOptions}
-                            setOptions={setFilteredRecords}
-                            records={students}
-                            clearOptions={() => setFilteredRecords([])}
-                        />
-                        <Fields options={tableHeaders} setOptions={setTableHeaders} />
-                        <Showing showing={data.length} total={students.length} />
-                    </div>
-                    <Table
-                        headers={selectedHeaders}
-                        data={data}
+                <div className="flex space-x-4">
+                    <Filters
+                        options={filterOptions}
+                        setOptions={setFilteredRecords}
+                        records={students}
+                        clearOptions={() => setFilteredRecords([])}
                     />
-                </>
+                    <Fields options={tableHeaders} setOptions={setTableHeaders} />
+                    <Showing showing={data.length} total={students.length} />
+                </div>
+            }
+
+            <TabularForm
+                headers={headers}
+                mutationUrl="students"
+            />
+
+            {
+                students.length > 0 &&
+                <Table
+                    headers={selectedHeaders}
+                    data={data}
+                />
             }
         </PageContainer>
     )

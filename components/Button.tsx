@@ -22,7 +22,7 @@ export default function Button({ children, className, onClick, goto, type, disab
     return (
         <button
             type={type ?? "button"}
-            style={{ minWidth: 120 }}
+            style={{ minWidth: 80 }}
             className={`${className ?? ""} ${getClasses(variant, disabled, border)}`}
             onClick={handleClick}
             disabled={disabled}
@@ -31,8 +31,8 @@ export default function Button({ children, className, onClick, goto, type, disab
 }
 
 function getClasses(variant: string | undefined, disabled: boolean, border?: string): string {
-    const defaultClass = `w-full px-6 max-w-lg outline-none py-0 h-12 flex items-center justify-center hover:opacity-90
-        space-x-2 whitespace-nowrap focus:outline-none disabled:opacity-50 animated font-medium
+    const defaultClass = `w-full px-6 max-w-lg outline-none py-0 h-12 flex items-center justify-center hover:opacity-90 space-x-2 whitespace-nowrap 
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 disabled:opacity-50 animated font-medium
         ${!disabled ? "cursor-pointer" : "cursor-default"}
     `
     const checkDisabled = (styles: string) => `${disabled ? styles + " opacity-50" : styles}`
