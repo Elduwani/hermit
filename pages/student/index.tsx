@@ -37,6 +37,11 @@ export default function Index({ students }: Props) {
     const data = filteredRecords.length ? filteredRecords : students
     const filterOptions = getUniqueEntries(headers, students, "filterBy")
 
+    const requiredFields = {
+        department: students[0].department,
+        faculty: students[0].faculty
+    }
+
     return (
         <PageContainer>
             <div className="flex justify-between">
@@ -68,6 +73,7 @@ export default function Index({ students }: Props) {
                     headers={headers}
                     mutationUrl="students"
                     close={() => setShowForm(false)}
+                    requiredFields={requiredFields}
                 />
             }
 

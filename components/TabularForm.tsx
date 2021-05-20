@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { v4 as uuid } from 'uuid'
+import { useState, useRef, useEffect } from 'react'
+import { v4 as uuid } from "uuid"
 import { VscAdd, VscArrowUp, VscChromeClose } from 'react-icons/vsc'
 import { _StringKeys, _TableHeader } from 'types'
 import { removeUnderscore } from 'utils/utils'
@@ -9,46 +9,53 @@ import { motion } from 'framer-motion'
 interface Props {
     headers: _TableHeader[],
     mutationUrl: string,
-    close(): void
+    requiredFields: _StringKeys,
+    close(): void,
+    identifier?: string
 }
 
-export default function TabularForm({ headers, mutationUrl, close }: Props) {
-    const [rows, setRows] = useState<{ [char: string]: _StringKeys }>({})
+export default function TabularForm({ headers, mutationUrl, requiredFields, close, identifier = "__uid" }: Props) {
     const formEntries = headers.filter(header => !!header.useForm)
+    const initialState = () => formEntries.reduce((acc: _StringKeys, current) => {
+        acc[current.key ?? current.name] = undefined
+        return { ...acc, ...requiredFields, [identifier]: uuid() }
+    }, {})
+
+    const [rows, setRows] = useState<_StringKeys[]>([])
+    const values = useRef(rows) //Don't have to trigger rerenders on handleUpdate
 
     function addRow() {
-        const uid: string = uuid()
-        setRows(r => ({ ...r, [uid]: {} }))
+        const newRow = initialState() //has to be the same for both to sync
+        setRows(r => [...r, newRow])
+        values.current = [...values.current, newRow]
     }
 
-    function removeRow(id: string) {
-        const newList = { ...rows }
-        delete newList[id]
+    function removeRow(index: string) {
+        const newList = rows.filter(row => index !== row[identifier])
+        values.current = values.current.filter(row => index !== row[identifier])
         setRows(newList)
     }
 
     function handleUpdate(e: React.ChangeEvent<HTMLFormElement>) {
-        let { name, value, dataset: { id, index } } = e.target
-        const current = formEntries[+index! as number].useForm //formEntries only contains entries with useForm
+        let { name, value, dataset: { uid } } = e.target
+        const current = formEntries.find(e => (e.key ?? e.name) === name) //formEntries only contains entries with useForm
+        const index = rows.findIndex(r => r[identifier] === uid)
 
-        if (typeof current === "object") {
-            value = current.modifier?.(value) ?? value
+        if (typeof current?.useForm === "object") {
+            value = current.useForm.modifier?.(value) ?? value
         }
 
-        setRows(r => ({
-            ...r, [id!]: {
-                ...r[id!],
-                [name]: typeof value === "string" ? value.trim() : value
-            }
-        }))
+        const newState = [...values.current]
+        newState[index][name] = value
+        values.current = newState
     }
 
     function handleSubmit() {
-        Object.values(rows).forEach(e => console.log(e))
+        console.log(values.current)
     }
 
     useEffect(() => {
-        if (!Object.keys(rows).length) addRow()
+        if (!rows.length) addRow()
     }, [])
 
     return (
@@ -58,10 +65,10 @@ export default function TabularForm({ headers, mutationUrl, close }: Props) {
             animate={{ opacity: 1, y: 0 }}
         >
             {
-                Object.keys(rows).map((id) =>
+                rows.map((row) =>
                     <Form
-                        key={id}
-                        id={id}
+                        key={row[identifier]}
+                        uid={row[identifier]}
                         removeRow={removeRow}
                         formEntries={formEntries}
                         handleUpdate={handleUpdate}
@@ -92,13 +99,13 @@ export default function TabularForm({ headers, mutationUrl, close }: Props) {
 }
 
 interface FormProps {
-    id: string,
+    uid: string,
     removeRow(id: string): void,
     formEntries: _TableHeader[],
     handleUpdate(e: React.ChangeEvent): void,
 }
 
-function Form({ id, removeRow, formEntries, handleUpdate }: FormProps) {
+function Form({ uid, removeRow, formEntries, handleUpdate }: FormProps) {
     return (
         <form className="flex w-full space-x-4">
             {
@@ -112,8 +119,7 @@ function Form({ id, removeRow, formEntries, handleUpdate }: FormProps) {
                                 key={i}
                                 name={key ?? name}
                                 onChange={handleUpdate}
-                                data-id={id}
-                                data-index={i}
+                                data-uid={uid}
                                 required={useForm.required}
                             >
                                 <option value="">{`--Select a ${label}--`}</option>
@@ -132,14 +138,13 @@ function Form({ id, removeRow, formEntries, handleUpdate }: FormProps) {
                             placeholder={label}
                             onChange={handleUpdate}
                             required={useForm?.required}
-                            data-id={id}
-                            data-index={i}
+                            data-uid={uid}
                         />
                     )
                 })
             }
             <span>
-                <Button className="w-[20px]" variant="outline" onClick={() => removeRow(id)}>
+                <Button className="w-[20px]" variant="outline" onClick={() => removeRow(uid)}>
                     <VscChromeClose className="text-xl" />
                 </Button>
             </span>
