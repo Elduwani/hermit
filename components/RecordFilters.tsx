@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { _TableHeader, _StringKeys } from "utils/types"
+import { _TableHeader, _StringKeys } from "types"
 import { VscCheck, VscClose } from "react-icons/vsc"
 import Button from "./Button"
 import PopOver from "./PopOver"

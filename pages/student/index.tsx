@@ -4,7 +4,7 @@ import prisma from "db"
 import Table from "../../components/Table"
 import Button from "components/Button";
 import { Fields, Filters, Showing } from "components/RecordFilters";
-import { _StringKeys, _TableHeader } from "utils/types";
+import { _StringKeys, _TableHeader } from "types";
 import { useState } from "react";
 import { getUniqueEntries } from "utils/utils";
 import TabularForm from "components/TabularForm";

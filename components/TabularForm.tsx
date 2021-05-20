@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { VscAdd, VscArrowUp, VscChromeClose } from 'react-icons/vsc'
-import { _StringKeys, _TableHeader } from 'utils/types'
+import { _StringKeys, _TableHeader } from 'types'
 import { removeUnderscore } from 'utils/utils'
 import Button from './Button'
 import { motion } from 'framer-motion'

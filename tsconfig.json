@@ -29,5 +29,9 @@
         "**/*.ts",
         "**/*.tsx",
         "prisma/seed.js",
+    ],
+    "typeRoots": [
+        "./node_modules/@types",
+        "./types"
     ]
 }

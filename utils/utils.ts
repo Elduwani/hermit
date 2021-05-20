@@ -1,4 +1,4 @@
-import { _TableHeader, _StringKeys } from "./types"
+import { _TableHeader, _StringKeys } from "types"
 
 export function getUniqueEntries(
     headers: _TableHeader[],
