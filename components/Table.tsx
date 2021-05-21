@@ -4,7 +4,8 @@ interface Props {
     headers: {
         name: string,
         key?: string | undefined,
-        modifier?: (val: string | boolean | null) => string
+        modifier?: (val: string | boolean | null) => string,
+        capitalize?: boolean
     }[],
     data: object[],
     isLoading?: boolean,
@@ -59,13 +60,13 @@ function TableRow({ data, headers }: { data: { [char: string]: any }, headers: P
         <tr className="py-2 px-4 h-12 divide-x divide-gray-400">
             {
                 headers.map((elem, index) => {
-                    const { key, name, modifier } = elem
+                    const { key, name, modifier, capitalize = true } = elem
                     const value = data[key ?? name]
                     const modifiedValue = modifier?.(value) ?? value
 
                     return (
                         <td key={name + index} className={`px-6 py-2 ${name.length < 15 && "whitespace-nowrap"}`}>
-                            <p className={`capitalize text-sm text-gray-600`}>
+                            <p className={`text-sm text-gray-600 ${capitalize && "capitalize"}`}>
                                 {modifiedValue}
                             </p>
                         </td>

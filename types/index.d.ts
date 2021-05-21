@@ -4,6 +4,7 @@ export interface _TableHeader {
     modifier?: (val: string | boolean | null) => string,
     selected?: boolean,
     filterBy?: boolean,
+    capitalize?: boolean,
     useForm?: {
         type?: string,
         inputType?: string,

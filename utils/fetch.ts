@@ -40,7 +40,7 @@ interface MutateProps {
     onSuccess?: Function,
     successMessage?: string,
     errorMessage?: string,
-    method?: 'put' | 'post' | undefined
+    method?: 'put' | 'post' | undefined,
 }
 export function useMutate({ url, refetchKey, onSuccess, method }: MutateProps) {
     const queryClient = useQueryClient()

@@ -34,7 +34,7 @@ export default function TabularForm({ headers, mutationUrl, requiredFields, refe
             values[key] = current?.useForm?.modifier?.(values[key]) ?? values[key]
         }
         values = { ...values, ...requiredFields }
-        if (!isLoading) mutate(values)
+        if (!isLoading && mutationUrl) mutate(values)
     })
 
     return (
@@ -60,7 +60,7 @@ export default function TabularForm({ headers, mutationUrl, requiredFields, refe
                                             required: useForm.required ? "This field is required" : false,
                                         })}
                                     >
-                                        <option value="">{`--Select a ${label}--`}</option>
+                                        <option value="">{`--Select ${label}--`}</option>
                                         {
                                             useForm.options?.map(o => <option key={o} value={o}>{o}</option>)
                                         }
@@ -90,13 +90,13 @@ export default function TabularForm({ headers, mutationUrl, requiredFields, refe
                         </span>
                     }
                     <span>
-                        <Button variant="light-gray" onClick={close}>Cancel</Button>
-                    </span>
-                    <span>
                         <Button variant="solid-gray" type="submit">
                             <VscArrowUp />
                             <span>Save records</span>
                         </Button>
+                    </span>
+                    <span>
+                        <Button variant="light-gray" onClick={close}>Close</Button>
                     </span>
                 </div>
             </form>

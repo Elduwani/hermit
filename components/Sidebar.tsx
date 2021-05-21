@@ -14,6 +14,9 @@ export default function Sidebar() {
             <Link href={`/student`}>
                 <a className="block capitalize">Students</a>
             </Link>
+            <Link href={`/course`}>
+                <a className="block capitalize">Courses</a>
+            </Link>
             {
                 isSuccess &&
                 <div className="flex-1 space-y-8 border-red-500">
