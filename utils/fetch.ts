@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useMutation, useQuery, useQueryClient } from "react-query"
+import { _StringKeys } from "types"
 
 const baseURL = process.env['NODE_ENV'] === "development" ? `http://localhost:3000/` : `https://hermit.netlifyapp.com`
 interface FetchProps {
@@ -44,8 +45,8 @@ interface MutateProps {
 export function useMutate({ url, refetchKey, onSuccess, method }: MutateProps) {
     const queryClient = useQueryClient()
 
-    const { data: response, isLoading, isSuccess, isError, mutate } = useMutation(data =>
-        axios[method ?? 'post'](baseURL + url, data),
+    const { data: response, isLoading, isSuccess, isError, mutate } = useMutation((data: unknown) =>
+        axios[method ?? 'post'](url, data),
         {
             onSuccess: () => {
                 onSuccess?.()

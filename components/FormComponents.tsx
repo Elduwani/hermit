@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Switch } from '@headlessui/react'
+import Select from './Select'
+import { _StringKeys } from 'types'
 
 export const validatePattern: { [char: string]: object } = {
     "numeric": {
@@ -54,28 +55,71 @@ export function InputWithLabel({ name, label, type, register, errors, required, 
     )
 }
 
-export default function SwitchElement({ name, enabled, onChange }: { name: string, enabled: boolean, onChange(e: any): void }) {
-    return (
-        <div className="py-16">
-            <Switch
-                checked={enabled}
-                onChange={() => onChange([name, enabled])}
-                className={`${enabled ? 'bg-teal-900' : 'bg-teal-700'}
-                    relative inline-flex flex-shrink-0 h-[38px] w-[74px] border-2 border-transparent 
-                    rounded-full cursor-pointer transition-colors ease-in-out duration-200 
-                    focus:outline-none focus-visible:ring-2  focus-visible:ring-white 
-                    focus-visible:ring-opacity-75`
-                }
-            >
-                <span className="sr-only">Use setting</span>
-                <span
-                    aria-hidden="true"
-                    className={`${enabled ? 'translate-x-9' : 'translate-x-0'}
-                        pointer-events-none inline-block h-[34px] w-[34px] rounded-full bg-white 
-                        shadow-lg transform ring-0 transition ease-in-out duration-200`
-                    }
+interface FormDataProps {
+    data: _StringKeys[],
+    register({ }): void,
+    errors: _StringKeys,
+    defaultValues: _StringKeys
+}
+
+export function FormData({ data, register, errors, defaultValues }: FormDataProps) {
+    return data.map((formElement, i) => {
+        const { label, name, type, options, required } = formElement
+
+        if (type === "radio") return (
+            <div key={i} className={`space-y-1 border rounded-lg p-3 bg-gray-50`}>
+                <p className="text-gray-500 text-sm capitalize">{name}</p>
+                <div className="flex flex-wrap -m-2">
+                    {options?.map((checkbox: _StringKeys) => {
+                        const { label: checkboxName, value, checked } = checkbox
+                        const label = checkboxName.replace(/_/gi, " ")
+                        const defaultChecked = defaultValues[name] === String(value) || checked
+
+                        return (
+                            <div className="space-x-2 m-2" key={checkboxName}>
+                                <input
+                                    type="radio"
+                                    name={name}
+                                    value={value ?? checkboxName}
+                                    defaultChecked={defaultChecked}
+                                    ref={register({
+                                        required: required ? "Please select one of these fields" : false,
+                                    })} />
+                                <label htmlFor={checkboxName} className="text-gray-600 text-sm capitalize">{label}</label>
+                            </div>
+                        )
+                    })}
+                </div>
+                {errors[name] && <span className="block text-red-600 text-sm">{errors[name].message}</span>}
+            </div>
+        )
+
+        if (type === "select") {
+            const { initialOptions } = formElement
+            return (
+                <Select
+                    key={i}
+                    name={name}
+                    label={label}
+                    required={required}
+                    initialOptions={initialOptions}
+                    register={register}
+                    errors={errors}
                 />
-            </Switch>
-        </div>
-    )
+            )
+        }
+
+        return (
+            <InputWithLabel
+                key={i}
+                type={type}
+                name={name}
+                label={label}
+                register={register}
+                errors={errors}
+                defaultValue={defaultValues?.current[name]}
+                required={required}
+            />
+        )
+    })
 }

@@ -1,62 +1,41 @@
-import { useState, useRef, useEffect } from 'react'
-import { v4 as uuid } from "uuid"
-import { VscAdd, VscArrowUp, VscChromeClose } from 'react-icons/vsc'
+import { useForm } from "react-hook-form"
+import { VscArrowUp } from 'react-icons/vsc'
+import { ImSpinner3 } from 'react-icons/im'
 import { _StringKeys, _TableHeader } from 'types'
 import { removeUnderscore } from 'utils/utils'
 import Button from './Button'
 import { motion } from 'framer-motion'
+import { useMutate } from "utils/fetch"
 
 interface Props {
     headers: _TableHeader[],
     mutationUrl: string,
     requiredFields: _StringKeys,
     close(): void,
-    identifier?: string
+    refetch?(): void
 }
 
-export default function TabularForm({ headers, mutationUrl, requiredFields, close, identifier = "__uid" }: Props) {
+export default function TabularForm({ headers, mutationUrl, requiredFields, refetch, close }: Props) {
     const formEntries = headers.filter(header => !!header.useForm)
-    const initialState = () => formEntries.reduce((acc: _StringKeys, current) => {
-        acc[current.key ?? current.name] = undefined
-        return { ...acc, ...requiredFields, [identifier]: uuid() }
-    }, {})
+    const { register, handleSubmit, reset, formState: { errors } } = useForm()
 
-    const [rows, setRows] = useState<_StringKeys[]>([])
-    const values = useRef(rows) //Don't have to trigger rerenders on handleUpdate
-
-    function addRow() {
-        const newRow = initialState() //has to be the same for both to sync
-        setRows(r => [...r, newRow])
-        values.current = [...values.current, newRow]
-    }
-
-    function removeRow(index: string) {
-        const newList = rows.filter(row => index !== row[identifier])
-        values.current = values.current.filter(row => index !== row[identifier])
-        setRows(newList)
-    }
-
-    function handleUpdate(e: React.ChangeEvent<HTMLFormElement>) {
-        let { name, value, dataset: { uid } } = e.target
-        const current = formEntries.find(e => (e.key ?? e.name) === name) //formEntries only contains entries with useForm
-        const index = rows.findIndex(r => r[identifier] === uid)
-
-        if (typeof current?.useForm === "object") {
-            value = current.useForm.modifier?.(value) ?? value
+    const { isLoading, mutate } = useMutate({
+        url: mutationUrl,
+        onSuccess: () => {
+            reset()
+            refetch?.()
+            console.log("Success");
         }
+    })
 
-        const newState = [...values.current]
-        newState[index][name] = value
-        values.current = newState
-    }
-
-    function handleSubmit() {
-        console.log(values.current)
-    }
-
-    useEffect(() => {
-        if (!rows.length) addRow()
-    }, [])
+    const onSubmit = handleSubmit((values) => {
+        for (const key in values) {
+            const current = formEntries.find((c) => (c.key ?? c.name) === key)
+            values[key] = current?.useForm?.modifier?.(values[key]) ?? values[key]
+        }
+        values = { ...values, ...requiredFields }
+        if (!isLoading) mutate(values)
+    })
 
     return (
         <motion.div
@@ -64,90 +43,63 @@ export default function TabularForm({ headers, mutationUrl, requiredFields, clos
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
         >
-            {
-                rows.map((row) =>
-                    <Form
-                        key={row[identifier]}
-                        uid={row[identifier]}
-                        removeRow={removeRow}
-                        formEntries={formEntries}
-                        handleUpdate={handleUpdate}
-                    />
-                )
-            }
-            <div className="flex justify-between space-x-4">
-                <span>
-                    <Button variant="light-gray" onClick={addRow}>
-                        <VscAdd />
-                        <span>New row</span>
-                    </Button>
-                </span>
-                <div className="flex items-center space-x-4">
+            <form onSubmit={onSubmit} className="space-y-4">
+                <div className="flex w-full space-x-4">
+                    {
+                        formEntries.map((header, i) => {
+                            const { key, name, useForm } = header
+                            const label = removeUnderscore(name)
+                            const _key = key ?? name
+
+                            if (useForm?.inputType === "select") {
+                                return (
+                                    <select
+                                        key={i}
+                                        className={errors[_key] ? "error" : ""}
+                                        {...register(_key, {
+                                            required: useForm.required ? "This field is required" : false,
+                                        })}
+                                    >
+                                        <option value="">{`--Select a ${label}--`}</option>
+                                        {
+                                            useForm.options?.map(o => <option key={o} value={o}>{o}</option>)
+                                        }
+                                    </select>
+                                )
+                            }
+
+                            return (
+                                <input
+                                    key={i}
+                                    className={errors[_key] ? "error" : ""}
+                                    type={useForm?.type ?? "text"}
+                                    placeholder={label}
+                                    {...register(_key, {
+                                        required: useForm?.required ? "This field is required" : false,
+                                    })}
+                                />
+                            )
+                        })
+                    }
+                </div>
+                <div className="flex justify-end space-x-4">
+                    {
+                        isLoading &&
+                        <span className="animate-spin grid place-items-center">
+                            <ImSpinner3 className="text-3xl" />
+                        </span>
+                    }
                     <span>
-                        <Button variant="solid-gray" onClick={handleSubmit}>
+                        <Button variant="light-gray" onClick={close}>Cancel</Button>
+                    </span>
+                    <span>
+                        <Button variant="solid-gray" type="submit">
                             <VscArrowUp />
                             <span>Save records</span>
                         </Button>
                     </span>
-                    <span>
-                        <Button variant="light-gray" onClick={close}>Close</Button>
-                    </span>
                 </div>
-            </div>
+            </form>
         </motion.div>
-    )
-}
-
-interface FormProps {
-    uid: string,
-    removeRow(id: string): void,
-    formEntries: _TableHeader[],
-    handleUpdate(e: React.ChangeEvent): void,
-}
-
-function Form({ uid, removeRow, formEntries, handleUpdate }: FormProps) {
-    return (
-        <form className="flex w-full space-x-4">
-            {
-                formEntries.map((header, i) => {
-                    const { key, name, useForm } = header
-                    const label = removeUnderscore(name)
-
-                    if (useForm?.inputType === "select") {
-                        return (
-                            <select
-                                key={i}
-                                name={key ?? name}
-                                onChange={handleUpdate}
-                                data-uid={uid}
-                                required={useForm.required}
-                            >
-                                <option value="">{`--Select a ${label}--`}</option>
-                                {
-                                    useForm.options?.map(o => <option key={o} value={o}>{o}</option>)
-                                }
-                            </select>
-                        )
-                    }
-
-                    return (
-                        <input
-                            key={i}
-                            type={useForm?.type ?? "text"}
-                            name={key ?? name}
-                            placeholder={label}
-                            onChange={handleUpdate}
-                            required={useForm?.required}
-                            data-uid={uid}
-                        />
-                    )
-                })
-            }
-            <span>
-                <Button className="w-[20px]" variant="outline" onClick={() => removeRow(uid)}>
-                    <VscChromeClose className="text-xl" />
-                </Button>
-            </span>
-        </form>
     )
 }

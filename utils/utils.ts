@@ -11,7 +11,7 @@ export function getUniqueEntries(
     }, [])
 
 
-    const filterOptions = records.reduce((acc, curr) => {
+    const filterOptions = records?.reduce((acc, curr) => {
         filterKeys.forEach((key: string) => {
             if (acc[key]) acc[key].push(curr[key])
             else acc[key] = [curr[key]]

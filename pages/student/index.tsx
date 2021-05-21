@@ -8,6 +8,7 @@ import { _StringKeys, _TableHeader } from "types";
 import { useState } from "react";
 import { getUniqueEntries } from "utils/utils";
 import TabularForm from "components/TabularForm";
+import { useFetch } from "utils/fetch";
 
 interface Props {
     students: Student[],
@@ -28,18 +29,20 @@ const headers: _TableHeader[] = [
     },
 ]
 
-export default function Index({ students }: Props) {
+export default function Index() {
     const [showForm, setShowForm] = useState(false)
+    const [filteredRecords, setFilteredRecords] = useState<Student[]>([])
     const [tableHeaders, setTableHeaders] = useState(headers.map(header => ({ ...header, selected: true })))
     const selectedHeaders = tableHeaders.filter(header => header.selected)
 
-    const [filteredRecords, setFilteredRecords] = useState<Student[]>([])
+    const { data: students = [], isLoading, error, refetch } = useFetch({ url: "/api/students", key: "students" })
+
     const data = filteredRecords.length ? filteredRecords : students
     const filterOptions = getUniqueEntries(headers, students, "filterBy")
 
     const requiredFields = {
-        department: students[0].department,
-        faculty: students[0].faculty
+        department: students[0]?.department,
+        faculty: students[0]?.faculty
     }
 
     return (
@@ -71,9 +74,10 @@ export default function Index({ students }: Props) {
                 showForm &&
                 <TabularForm
                     headers={headers}
-                    mutationUrl="students"
+                    mutationUrl="/api/students"
                     close={() => setShowForm(false)}
                     requiredFields={requiredFields}
+                    refetch={refetch}
                 />
             }
 

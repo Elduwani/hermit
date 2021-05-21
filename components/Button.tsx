@@ -13,7 +13,7 @@ interface Props {
     form?: string
 }
 
-export default function Button({ children, className, onClick, goto, type, form, disabled = false, variant, border }: Props) {
+export default function Button({ children, className, onClick, goto, type, disabled = false, variant, border }: Props) {
 
     function handleClick() {
         onClick?.()
@@ -27,7 +27,6 @@ export default function Button({ children, className, onClick, goto, type, form,
             className={`${className ?? ""} ${getClasses(variant, disabled, border)}`}
             onClick={handleClick}
             disabled={disabled}
-            form={form ?? ""}
         >{children}</button>
     )
 }
