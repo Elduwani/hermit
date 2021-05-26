@@ -40,7 +40,7 @@ export default function Index({ student, courses }: Props) {
                 </div>
                 <span>
                     <Button variant="light-gray">
-                        Register Courses
+                        Register Results
                     </Button>
                 </span>
             </div>

@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form"
 import { VscArrowUp } from 'react-icons/vsc'
-import { ImSpinner3 } from 'react-icons/im'
 import { _StringKeys, _TableHeader } from 'types'
 import { removeUnderscore } from 'utils/utils'
 import Button from './Button'
 import { motion } from 'framer-motion'
 import { useMutate } from "utils/fetch"
+import Spinner from "./Spinner"
 
 interface Props {
     headers: _TableHeader[],
@@ -86,7 +86,7 @@ export default function TabularForm({ headers, mutationUrl, requiredFields, refe
                     {
                         isLoading &&
                         <span className="animate-spin grid place-items-center">
-                            <ImSpinner3 className="text-3xl" />
+                            <Spinner />
                         </span>
                     }
                     <span>
