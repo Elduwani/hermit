@@ -11,6 +11,13 @@ export interface _TableHeader {
         options?: any[],
         required?: boolean,
         modifier?(v): string | number | boolean
+    },
+    input?: {
+        type: string,
+        placeholder: string,
+        empty: boolean,
+        initialOptions: _StringKeys[]
+        modifier?(v): string | number | boolean
     }
 }
 

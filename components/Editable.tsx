@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { FiArrowUp } from "react-icons/fi"
 import { useMutate } from "utils/fetch";
 import Button from "./Button";
 import Select from "./Select";
@@ -10,9 +9,9 @@ interface Props {
     headers: _TableHeader[],
     data: _StringKeys[],
     mutationUrl: string,
-    method: "put" | "post",
-    refetchKey: string,
-    buttonText: string,
+    method?: "put" | "post",
+    refetchKey?: string,
+    buttonText?: string,
 }
 
 export default function Editable({ headers, data, mutationUrl, method, refetchKey, buttonText }: Props) {
@@ -21,11 +20,6 @@ export default function Editable({ headers, data, mutationUrl, method, refetchKe
             <table className="bg-white border-collapse min-w-full">
                 <thead>
                     <tr>
-                        {/* selected indicator and spacer ---> ghost */}
-                        <th className="bg-gray-50 h-full sticky top-0 left-0 z-20">
-                            <div className="w-2 h-full opacity-0"></div>
-                        </th>
-
                         {
                             headers.map((elem, i) => {
                                 let { key, name } = elem
@@ -132,12 +126,12 @@ function TableRow({ data, headers, buttonText, mutationUrl, method, refetchKey }
     }, [editable, headers, data])
 
     return (
-        <tr className="py-2 px-4 h-20">
-            <td className={`spacer ${editable ? "bg-red-500" : ""}`}></td>
+        <tr className="py-2 px-4 h-12 divide-x divide-gray-400">
             {
                 headers.map((elem, index) => {
-                    const { key, type, placeholder, inputType, modifier, capitalize = true, sticky = false, empty = false, initialOptions } = elem
-                    const label = elem.label ?? key
+                    const { key, input, modifier, capitalize = true } = elem
+                    const { empty = false, initialOptions, placeholder } = input ?? {}
+                    const label = elem.name ?? key
                     const value = empty ? "" : data[key]
 
                     return (
@@ -145,9 +139,7 @@ function TableRow({ data, headers, buttonText, mutationUrl, method, refetchKey }
                             key={label + index}
                             style={{ minWidth: 120 }}
                             onClick={() => !editable && setEditable(true)}
-                            className={`bg-white px-2 py-2 text-sm cursor-pointer
-                                ${index === 0 && "pl-4"} 
-                                ${sticky && "sticky left-0 z-10"} 
+                            className={`bg-white text-sm cursor-pointer px-6 py-2 
                                 ${value?.length <= 15 && "whitespace-nowrap"}
                             `}>
                             {
@@ -172,7 +164,6 @@ function TableRow({ data, headers, buttonText, mutationUrl, method, refetchKey }
                                                 placeholder={placeholder}
                                                 value={values?.[key] ?? ''}
                                                 onChange={(e) => handleChange(e, modifier)}
-                                                fontSize="text-sm"
                                             />
                                 )
                                     :

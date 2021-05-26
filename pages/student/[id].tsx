@@ -4,6 +4,7 @@ import prisma from "db"
 import Table from "../../components/Table"
 import Button from "components/Button";
 import { _StringKeys, _TableHeader } from "types";
+import Editable from "components/Editable";
 
 interface Props {
     student: Student,
@@ -11,25 +12,20 @@ interface Props {
 }
 
 const headers: _TableHeader[] = [
-    { name: "title", useForm: { required: true } },
-    { name: "course_code", key: "code", useForm: { required: true } },
-    { name: "credit", filterBy: true, useForm: { required: true } },
-    { name: "semester", filterBy: true, useForm: { required: true } },
-    { name: "level", filterBy: true, useForm: { required: true } },
+    { name: "title" },
+    { name: "course_code", key: "code" },
+    { name: "credit" },
+    { name: "semester" },
+    { name: "level" },
     {
-        name: "elective",
-        modifier: (val) => !!val ? "yes" : "no",
-        useForm: {
-            inputType: "select",
-            options: ["Yes", "No"],
-            modifier: (val) => val === "yes" ? true : false,
-            required: true
+        name: "score",
+        type: {
+            modifier: (val) => +val,
         }
     },
 ]
 
 export default function Index({ student, courses }: Props) {
-
     return (
         <PageContainer>
             <div className="flex justify-between">
@@ -40,15 +36,16 @@ export default function Index({ student, courses }: Props) {
                 </div>
                 <span>
                     <Button variant="light-gray">
-                        Register Results
+                        Update Results
                     </Button>
                 </span>
             </div>
             {
                 courses.length > 0 &&
-                <Table
+                <Editable
                     headers={headers}
                     data={courses}
+                    mutationUrl=""
                 />
             }
         </PageContainer>
