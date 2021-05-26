@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { useRef } from "react";
+import { _StringKeys } from "types";
 
 interface Props {
     headers: {
@@ -9,10 +11,11 @@ interface Props {
     }[],
     data: object[],
     isLoading?: boolean,
-    setOffset?: Function
+    setOffset?: Function,
+    goto?: [string, string]
 }
 
-export default function Table({ headers, data = [] }: Props) {
+export default function Table({ headers, data = [], goto }: Props) {
     const containerRef = useRef<HTMLTableElement>(null)
 
     return (
@@ -45,6 +48,7 @@ export default function Table({ headers, data = [] }: Props) {
                                 key={index}
                                 data={entry}
                                 headers={headers}
+                                goto={goto}
                             />
                         )
                     }
@@ -54,7 +58,14 @@ export default function Table({ headers, data = [] }: Props) {
     )
 }
 
-function TableRow({ data, headers }: { data: { [char: string]: any }, headers: Props["headers"] }) {
+function TableRow(
+    { data, headers, goto }:
+        {
+            data: _StringKeys,
+            headers: Props["headers"],
+            goto: Props["goto"]
+        }
+) {
 
     return (
         <tr className="py-2 px-4 h-12 divide-x divide-gray-400">
@@ -63,12 +74,22 @@ function TableRow({ data, headers }: { data: { [char: string]: any }, headers: P
                     const { key, name, modifier, capitalize = true } = elem
                     const value = data[key ?? name]
                     const modifiedValue = modifier?.(value) ?? value
+                    const [route, id] = goto ?? []
 
                     return (
                         <td key={name + index} className={`px-6 py-2 ${name.length < 15 && "whitespace-nowrap"}`}>
-                            <p className={`text-sm text-gray-600 ${capitalize && "capitalize"}`}>
-                                {modifiedValue}
-                            </p>
+                            {
+                                route && id ?
+                                    <Link href={route + data[id]}>
+                                        <a className={`text-sm w-full border text-gray-600 ${capitalize && "capitalize"}`}>
+                                            {modifiedValue}
+                                        </a>
+                                    </Link>
+                                    :
+                                    <p className={`text-sm text-gray-600 ${capitalize && "capitalize"}`}>
+                                        {modifiedValue}
+                                    </p>
+                            }
                         </td>
                     )
                 })

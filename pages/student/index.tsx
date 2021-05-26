@@ -82,6 +82,7 @@ export default function Index() {
                 <Table
                     headers={selectedHeaders}
                     data={_data}
+                    goto={["/student/", "id"]}
                 />
             }
         </PageContainer>
